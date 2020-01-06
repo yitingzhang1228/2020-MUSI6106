@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+/bin/debug
+/bld/.vs/MUSI6106/v16/*.suo
+bld
+/lib/debug/*.exp
