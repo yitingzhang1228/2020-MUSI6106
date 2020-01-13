@@ -33,21 +33,42 @@ int main(int argc, char* argv[])
 
     //////////////////////////////////////////////////////////////////////////////
     // parse command line arguments
- 
+    // Usage: ./MUSI6106Exec sweep.wav sweep.txt
+    sInputFilePath = argv[1];
+    sOutputFilePath = argv[2];
+    
     //////////////////////////////////////////////////////////////////////////////
     // open the input wave file
- 
+    CAudioFileIf::create(phAudioFile);
+    phAudioFile->openFile(sInputFilePath, CAudioFileIf::kFileRead);
+    
     //////////////////////////////////////////////////////////////////////////////
     // open the output text file
+    hOutputFile.open(sOutputFilePath, std::fstream::out);
  
     //////////////////////////////////////////////////////////////////////////////
     // allocate memory
+    ppfAudioData = (float**) malloc (sizeof(float*) * 2);
+    ppfAudioData[0] = (float*) malloc (sizeof(float) * kBlockSize);
+    ppfAudioData[1] = (float*) malloc (sizeof(float) * kBlockSize);
  
     //////////////////////////////////////////////////////////////////////////////
     // get audio data and write it to the output text file (one column per channel)
+    while (!phAudioFile->isEof()){
+        long long int iNumFrames = kBlockSize;
+        phAudioFile->readData(ppfAudioData, iNumFrames);
+        for (int i = 0; i < iNumFrames; i++){
+            hOutputFile << ppfAudioData[0][i] << '\t' << ppfAudioData[1][i] << endl;
+        }
+    }
 
     //////////////////////////////////////////////////////////////////////////////
     // clean-up (close files and free memory)
+    free(ppfAudioData[0]);
+    free(ppfAudioData[1]);
+    free(ppfAudioData);
+    hOutputFile.close();
+    CAudioFileIf::destroy(phAudioFile);
 
     // all done
     return 0;
