@@ -20,8 +20,9 @@ public:
     virtual Error_t process (float **ppfInputBuffer, float **ppfOutputBuffer, int iNumberOfFrames) = 0;
 
 protected:
-    int iNumChannels;
     int maxDelayLength;
+    int iNumChannels;
+    int test;
     float gain;
     Buffer *circularBuffer;
     
@@ -66,7 +67,6 @@ private:
     int size;
     int numChannels;
     int head;
-    int tail;
     float **buffer;
 };
 

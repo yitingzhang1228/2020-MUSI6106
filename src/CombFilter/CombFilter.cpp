@@ -14,8 +14,8 @@ using namespace std;
 //////////////////////////////////////////////////////////////////////////////////////////
 
 CCombFilterBase::CCombFilterBase(int maxDelayLength, int iNumChannels) :
-    iNumChannels(iNumChannels),
-    maxDelayLength(maxDelayLength)
+    maxDelayLength(maxDelayLength),
+    iNumChannels(iNumChannels)
 {
     circularBuffer = new Buffer(maxDelayLength, iNumChannels);
     circularBuffer->init();
@@ -31,8 +31,8 @@ Error_t CCombFilterBase::setParam (int eParam, float fParamValue)
     if (eParam == CCombFilterIf::kParamGain) {
         gain = fParamValue;
     }
-    else{
-        maxDelayLength = fParamValue;
+    else{ //delay
+        maxDelayLength = int(fParamValue);
     }
     return kNoError;
 }
@@ -42,8 +42,8 @@ float   CCombFilterBase::getParam (int eParam) const
     if (eParam == CCombFilterIf::kParamGain) {
         return gain;
     }
-    else{
-        return maxDelayLength;
+    else{ //delay
+        return (float)maxDelayLength;
     }
 }
 
@@ -55,7 +55,7 @@ Error_t CCombFilterFIR::process(float **ppfAudioDataIn, float **ppfAudioDataOut,
         circularBuffer->read(sample);
         // for each channel
         for (int j=0; j<iNumChannels; j++) {
-            ppfAudioDataOut[j][i] = ppfAudioDataIn[j][i] + getParam(CCombFilterIf::kParamGain) * sample[j];
+            ppfAudioDataOut[j][i] = ppfAudioDataIn[j][i] + gain * sample[j];
         }
         circularBuffer->write(ppfAudioDataIn, i);
     }
@@ -68,7 +68,7 @@ Error_t CCombFilterIIR::process(float **ppfAudioDataIn, float **ppfAudioDataOut,
     for (int i=0; i<iNumFrames; i++) {
         circularBuffer->read(sample);
         for (int j=0; j<iNumChannels; j++) {
-            ppfAudioDataOut[j][i] = ppfAudioDataIn[j][i] + getParam(CCombFilterIf::kParamGain) * sample[j];
+            ppfAudioDataOut[j][i] = ppfAudioDataIn[j][i] + gain * sample[j];
         }
         circularBuffer->write(ppfAudioDataOut, i);
     }
@@ -83,7 +83,6 @@ Buffer::Buffer(int size, int numChannels):
     numChannels(numChannels)
 {
     head = 0;
-    tail = 0;
     buffer = new float *[numChannels];
     for(int i = 0; i < numChannels; i++) {
         buffer[i] = new float[size];
@@ -109,12 +108,11 @@ void Buffer::read(float *sample) {
     for (int i = 0; i < numChannels; i++) {
         sample[i] = buffer[i][head];
     }
-    head = (head + 1) % size;
 }
 
 void Buffer::write(float **input, int index) {
     for(int i = 0; i < numChannels; i++) {
-        buffer[i][tail] = input[i][index];
+        buffer[i][head] = input[i][index];
     }
-    tail = (tail + 1) % size;
+    head = (head + 1) % size;
 }

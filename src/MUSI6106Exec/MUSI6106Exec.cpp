@@ -18,13 +18,12 @@ void    showClInfo ();
 int main(int argc, char* argv[])
 {
     std::string             sInputFilePath,                 //!< file paths
-                            sOutputFilePath,
-                            sFilterType;
+                            sOutputFilePath;
 
     static const int        kBlockSize = 1024;
     
-    float                   fDelayTime = 0, fGain = 0;
-    float                   fMaxDelayTime = 1.F;
+    float                   fDelayTime = 1, fGain = 0;
+//    float                   fMaxDelayTime = 1.F;
 
     clock_t                 time = 0;
 
@@ -58,7 +57,7 @@ int main(int argc, char* argv[])
     {
     sInputFilePath = argv[1];
     sOutputFilePath = argv[2];
-    sFilterType = strcmp(argv[3], "FIR") == 0 ? CCombFilterIf::kCombFIR : CCombFilterIf::kCombIIR;
+    combFilterType = strcmp(argv[3], "FIR") == 0 ? CCombFilterIf::kCombFIR : CCombFilterIf::kCombIIR;
     fDelayTime = atof(argv[4]);
     fGain = atof(argv[5]);
     }
@@ -87,7 +86,7 @@ int main(int argc, char* argv[])
     //////////////////////////////////////////////////////////////////////////////
     // instantiate CCombFilterIf
     CCombFilterIf::create(phCombFilter);
-    phCombFilter->init(combFilterType, fMaxDelayTime, stFileSpec.fSampleRateInHz, stFileSpec.iNumChannels);
+    phCombFilter->init(combFilterType, fDelayTime, stFileSpec.fSampleRateInHz, stFileSpec.iNumChannels);
     phCombFilter->setParam(CCombFilterIf::kParamGain, fGain);
     phCombFilter->setParam(CCombFilterIf::kParamDelay, fDelayTime);
     
