@@ -37,3 +37,5 @@ bld
 /*.bak
 /src/MUSI6106Exec/*.bak
 /src/Tests/TestExec/*.bak
+/src/Tests/Tests/*.bak
+/src/CombFilter/*.bak
