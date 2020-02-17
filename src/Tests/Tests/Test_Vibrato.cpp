@@ -104,7 +104,7 @@ SUITE(Vibrato)
 
         Testprocess();
 
-        int iDelay = CUtil::float2int<int>(m_fMaxWidthInSec*m_fSampleRate+1);
+        int iDelay = CUtil::float2int<int>(m_fMaxWidthInSec*m_fSampleRate);
         for (int c = 0; c < m_iNumChannels; c++)
             CHECK_ARRAY_CLOSE(m_ppfInputData[c], &m_ppfOutputData[c][iDelay], m_iDataLength-iDelay, 1e-3);
     }
@@ -122,7 +122,7 @@ SUITE(Vibrato)
 
         Testprocess();
 
-        int iDelay = CUtil::float2int<int>(m_fMaxWidthInSec*m_fSampleRate*2+1);
+        int iDelay = CUtil::float2int<int>(m_fMaxWidthInSec*m_fSampleRate*2);
         for (int c = 0; c < m_iNumChannels; c++)
         {
             CHECK_ARRAY_CLOSE(m_ppfInputData[c], &m_ppfOutputData[c][iDelay], m_iDataLength-iDelay, 1e-3);
@@ -175,7 +175,7 @@ SUITE(Vibrato)
 
         Testprocess();
 
-        int iDelay = CUtil::float2int<int>(m_fMaxWidthInSec*m_fSampleRate+1);
+        int iDelay = CUtil::float2int<int>(m_fMaxWidthInSec*m_fSampleRate);
         for (int c = 0; c < m_iNumChannels; c++)
             CHECK_ARRAY_CLOSE(m_ppfInputData[c], &m_ppfOutputData[c][iDelay], m_iDataLength-iDelay, 1e-3);
     }
@@ -192,7 +192,7 @@ SUITE(Vibrato)
 
         Testprocess();
 
-        int iDelay = CUtil::float2int<int>(m_fMaxWidthInSec*m_fSampleRate+1);
+        int iDelay = CUtil::float2int<int>(m_fMaxWidthInSec*m_fSampleRate);
 
         for (int c = 0; c < m_iNumChannels; c++)
             CHECK_ARRAY_CLOSE(m_ppfInputData[c], &m_ppfOutputData[c][iDelay], m_iDataLength-iDelay, 1e-3);

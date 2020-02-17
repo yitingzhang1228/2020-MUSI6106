@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
     CVibrato                *pCVibrato = 0;
     float                   fWidthInSec = 0;
     float                   fFrequency = 0;
-    float                   fMaxDelayInSec = 0.5;
+    const float             fMaxDelayInSec = 0.5;
 
     showClInfo();
 

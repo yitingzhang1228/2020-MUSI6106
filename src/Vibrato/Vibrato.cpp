@@ -13,7 +13,7 @@ CVibrato::CVibrato () :
     m_iNumChannels(0),
     m_fWidthInSec(0),
     m_fFrequency(0),
-    m_fMaxWidthInSec(0.5),
+    m_fMaxWidthInSec(0),
     m_ppCRingBuffer(0),
     m_pCLfo(0)
 {
@@ -52,12 +52,13 @@ Error_t CVibrato::init (float fMaxWidthInSec, float fSampleRateInHz, int iNumCha
 {
     m_fSampleRate = fSampleRateInHz;
     m_iNumChannels = iNumChannels;
+    m_fMaxWidthInSec = fMaxWidthInSec;
     
     m_ppCRingBuffer = new CRingBuffer<float>*[m_iNumChannels];
     for(int i=0; i<iNumChannels; i++)
     {
-        m_ppCRingBuffer[i] = new CRingBuffer<float>(CUtil::float2int<int>(fMaxWidthInSec*m_fSampleRate*2+1));
-        m_ppCRingBuffer[i]->setWriteIdx(CUtil::float2int<int>(fMaxWidthInSec*m_fSampleRate+1));
+        m_ppCRingBuffer[i] = new CRingBuffer<float>(CUtil::float2int<int>(m_fMaxWidthInSec*m_fSampleRate*2+1));
+        m_ppCRingBuffer[i]->setWriteIdx(CUtil::float2int<int>(m_fMaxWidthInSec*m_fSampleRate));
     }
     
     m_bIsInitialized = true;
@@ -76,17 +77,17 @@ Error_t CVibrato::reset ()
     for (int i=0; i<m_iNumChannels; i++)
         delete m_ppCRingBuffer[i];
     delete [] m_ppCRingBuffer;
-    m_ppCRingBuffer       = 0;
+    m_ppCRingBuffer = 0;
     
     delete m_pCLfo;
-    m_pCLfo             = 0;
+    m_pCLfo = 0;
     
     m_fSampleRate = 0;
     m_iNumChannels = 0;
     m_fWidthInSec = 0;
     m_fFrequency = 0;
     
-    m_bIsInitialized    = false;
+    m_bIsInitialized = false;
 
     return kNoError;
 }
@@ -100,10 +101,10 @@ Error_t CVibrato::setParam (VibratoParam_t eParam, float fParamValue)
     {
     case kParamWidthInSec:
         m_fWidthInSec = fParamValue;
-            if(m_fWidthInSec>m_fMaxWidthInSec){
-                return kFunctionInvalidArgsError;
-            }
-        break;
+        if(m_fWidthInSec>m_fMaxWidthInSec){
+            return kFunctionInvalidArgsError;
+        }
+            break;
            
     case kParamFrequency:
         m_fFrequency = fParamValue;
