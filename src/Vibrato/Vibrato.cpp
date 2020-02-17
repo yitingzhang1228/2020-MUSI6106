@@ -53,12 +53,13 @@ Error_t CVibrato::init (float fMaxWidthInSec, float fSampleRateInHz, int iNumCha
     m_fSampleRate = fSampleRateInHz;
     m_iNumChannels = iNumChannels;
     m_fMaxWidthInSec = fMaxWidthInSec;
+    int iMaxWidthInSample = CUtil::float2int<int>(m_fMaxWidthInSec * m_fSampleRate);
     
     m_ppCRingBuffer = new CRingBuffer<float>*[m_iNumChannels];
     for(int i=0; i<iNumChannels; i++)
     {
-        m_ppCRingBuffer[i] = new CRingBuffer<float>(CUtil::float2int<int>(m_fMaxWidthInSec*m_fSampleRate*2+1));
-        m_ppCRingBuffer[i]->setWriteIdx(CUtil::float2int<int>(m_fMaxWidthInSec*m_fSampleRate));
+        m_ppCRingBuffer[i] = new CRingBuffer<float>(iMaxWidthInSample*2+1);
+        m_ppCRingBuffer[i]->setWriteIdx(iMaxWidthInSample);
     }
     
     m_bIsInitialized = true;
@@ -86,6 +87,7 @@ Error_t CVibrato::reset ()
     m_iNumChannels = 0;
     m_fWidthInSec = 0;
     m_fFrequency = 0;
+    m_fMaxWidthInSec = 0;
     
     m_bIsInitialized = false;
 

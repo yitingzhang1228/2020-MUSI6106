@@ -32,7 +32,7 @@ public:
     float getNextVal()
     {
         float fVal = m_fWidthInSec * m_fSampleRate * m_pCRingBuff->get(m_fReadIdx);
-        float fReadIdxNext = m_fReadIdx + m_fFrequency/m_fSampleRate*m_iBufferLength;
+        float fReadIdxNext = m_fReadIdx + m_fFrequency / m_fSampleRate * m_iBufferLength;
         if(fReadIdxNext >= m_iBufferLength)
             m_fReadIdx = fReadIdxNext - m_iBufferLength;
         else
