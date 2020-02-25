@@ -7,7 +7,7 @@
 
 
 /*
- * The vibrato class has ring buffer ojects for each channel of the audio and a LFO object.
+ * The vibrato class has ring buffer objects for each channel of the audio and a LFO object.
  * The delay length of vibrato is set to maximum LFO width allowed.
  *
  * To use the Vibrato class, use the following procedures:

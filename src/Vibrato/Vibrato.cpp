@@ -58,7 +58,7 @@ Error_t CVibrato::init (float fMaxWidthInSec, float fSampleRateInHz, int iNumCha
     m_ppCRingBuffer = new CRingBuffer<float>*[m_iNumChannels];
     for(int i=0; i<iNumChannels; i++)
     {
-        m_ppCRingBuffer[i] = new CRingBuffer<float>(iMaxWidthInSample*2+1);
+        m_ppCRingBuffer[i] = new CRingBuffer<float>(iMaxWidthInSample * 2 + 1);
         m_ppCRingBuffer[i]->setWriteIdx(iMaxWidthInSample);
     }
     
@@ -69,7 +69,7 @@ Error_t CVibrato::init (float fMaxWidthInSec, float fSampleRateInHz, int iNumCha
 
 Error_t CVibrato::initLfo ()
 {
-    m_pCLfo = new CLfo(m_fSampleRate, m_fWidthInSec , m_fFrequency);
+    m_pCLfo = new CLfo(m_fSampleRate, m_fWidthInSec, m_fFrequency);
     return kNoError;
 }
 
@@ -103,13 +103,16 @@ Error_t CVibrato::setParam (VibratoParam_t eParam, float fParamValue)
     {
     case kParamWidthInSec:
         m_fWidthInSec = fParamValue;
-        if(m_fWidthInSec>m_fMaxWidthInSec){
+        if(m_fWidthInSec>m_fMaxWidthInSec || m_fWidthInSec<0){
             return kFunctionInvalidArgsError;
         }
             break;
            
     case kParamFrequency:
         m_fFrequency = fParamValue;
+        if(m_fFrequency<0){
+            return kFunctionInvalidArgsError;
+        }
         break;
     }
     return kNoError;
@@ -129,12 +132,14 @@ float   CVibrato::getParam (VibratoParam_t eParam) const
 
 Error_t CVibrato::process (float **ppfInputBuffer, float **ppfOutputBuffer, int iNumberOfFrames)
 {
-    for(int i=0; i<iNumberOfFrames; i++)
+    for (int i=0; i<iNumberOfFrames; i++)
     {
-        float fOffset = m_pCLfo->getNextVal();
+        //get offset from sine wavetable
+        float fOffset = m_pCLfo->getNextValue();
         for (int j=0; j<m_iNumChannels; j++)
         {
             m_ppCRingBuffer[j]->putPostInc(ppfInputBuffer[j][i]);
+            //read buffer with offset
             ppfOutputBuffer[j][i] = m_ppCRingBuffer[j]->get(-fOffset);
             m_ppCRingBuffer[j]->getPostInc();
             

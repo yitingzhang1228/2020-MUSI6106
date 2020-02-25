@@ -77,18 +77,18 @@ SUITE(Vibrato)
             }
         }
 
-        CVibrato *m_pVibrato;
-        float **m_ppfInputData,
-            **m_ppfOutputData,
-            **m_ppfInputTmp,
-            **m_ppfOutputTmp;
-        int m_iDataLength;
-        float m_fMaxWidthInSec;
-        int m_iBlockLength;
-        int m_iNumChannels;
-        float m_fSampleRate;
-        float m_fWidthInSec,
-            m_fFrequency;
+        CVibrato    *m_pVibrato;
+        float       **m_ppfInputData,
+                    **m_ppfOutputData,
+                    **m_ppfInputTmp,
+                    **m_ppfOutputTmp;
+        int         m_iDataLength;
+        float       m_fMaxWidthInSec;
+        int         m_iBlockLength;
+        int         m_iNumChannels;
+        float       m_fSampleRate;
+        float       m_fWidthInSec;
+        float       m_fFrequency;
 
     };
 
@@ -115,6 +115,7 @@ SUITE(Vibrato)
         m_pVibrato->setParam(CVibrato::kParamFrequency, 5);
         m_pVibrato->setParam(CVibrato::kParamWidthInSec, 0.2);
         m_pVibrato->initLfo();
+        
         for (int c = 0; c < m_iNumChannels; c++)
         {
             CSynthesis::generateDc(m_ppfInputData[c], m_iDataLength, 0.5);
@@ -122,7 +123,7 @@ SUITE(Vibrato)
 
         Testprocess();
 
-        int iDelay = CUtil::float2int<int>(m_fMaxWidthInSec*m_fSampleRate*2);
+        int iDelay = CUtil::float2int<int>(m_fMaxWidthInSec*m_fSampleRate);
         for (int c = 0; c < m_iNumChannels; c++)
         {
             CHECK_ARRAY_CLOSE(m_ppfInputData[c], &m_ppfOutputData[c][iDelay], m_iDataLength-iDelay, 1e-3);
@@ -139,6 +140,7 @@ SUITE(Vibrato)
         Testprocess();
 
         m_pVibrato->reset();
+        
         m_pVibrato->init(m_fMaxWidthInSec,m_fSampleRate,m_iNumChannels);
         m_pVibrato->setParam(CVibrato::kParamFrequency, 5);
         m_pVibrato->setParam(CVibrato::kParamWidthInSec, 0.2);
@@ -164,7 +166,7 @@ SUITE(Vibrato)
     }
     
     // Zero input signal.
-    TEST_FIXTURE(VibratoData, VibZeroInput)
+    TEST_FIXTURE(VibratoData, ZeroInput)
     {
         m_pVibrato->setParam(CVibrato::kParamFrequency, 5);
         m_pVibrato->setParam(CVibrato::kParamWidthInSec, 0.2);
@@ -183,17 +185,16 @@ SUITE(Vibrato)
     // Output equals delayed input when modulation frequency is 0.
     TEST_FIXTURE(VibratoData, ZeroModFreq)
     {
-        for (int c = 0; c < m_iNumChannels; c++)
-            CSynthesis::generateSine (m_ppfInputData[c], 440.F, m_fSampleRate, m_iDataLength, .8F, static_cast<float>(c*M_PI_2));
-
-        m_pVibrato->setParam(CVibrato::kParamWidthInSec, 5);
         m_pVibrato->setParam(CVibrato::kParamFrequency, 0);
+        m_pVibrato->setParam(CVibrato::kParamWidthInSec, 0.2);
         m_pVibrato->initLfo();
+        
+        for (int c = 0; c < m_iNumChannels; c++)
+        CSynthesis::generateSine (m_ppfInputData[c], 440.F, m_fSampleRate, m_iDataLength, .8F, static_cast<float>(c*M_PI_2));
 
         Testprocess();
 
         int iDelay = CUtil::float2int<int>(m_fMaxWidthInSec*m_fSampleRate);
-
         for (int c = 0; c < m_iNumChannels; c++)
             CHECK_ARRAY_CLOSE(m_ppfInputData[c], &m_ppfOutputData[c][iDelay], m_iDataLength-iDelay, 1e-3);
     }
