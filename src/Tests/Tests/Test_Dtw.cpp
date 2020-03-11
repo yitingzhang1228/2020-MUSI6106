@@ -64,11 +64,11 @@ SUITE(Dtw)
         for (int i = 0; i < m_aiMatrixDimension[0]; i++)
             m_ppfData[i]    = new float [m_aiMatrixDimension[1]];
 
-        m_ppfData[0][0] = 0; m_ppfData[0][1] = 1; m_ppfData[0][2] = 2; m_ppfData[0][3] = 1; 
-        m_ppfData[1][0] = 1; m_ppfData[1][1] = 2; m_ppfData[1][2] = 3; m_ppfData[1][3] = 0; 
-        m_ppfData[2][0] = 1; m_ppfData[2][1] = 0; m_ppfData[2][2] = 1; m_ppfData[2][3] = 2; 
-        m_ppfData[3][0] = 2; m_ppfData[3][1] = 1; m_ppfData[3][2] = 0; m_ppfData[3][3] = 3; 
-        m_ppfData[4][0] = 0; m_ppfData[4][1] = 1; m_ppfData[4][2] = 2; m_ppfData[4][3] = 1; 
+        m_ppfData[0][0] = 0; m_ppfData[0][1] = 1; m_ppfData[0][2] = 2; m_ppfData[0][3] = 1;
+        m_ppfData[1][0] = 1; m_ppfData[1][1] = 2; m_ppfData[1][2] = 3; m_ppfData[1][3] = 0;
+        m_ppfData[2][0] = 1; m_ppfData[2][1] = 0; m_ppfData[2][2] = 1; m_ppfData[2][3] = 2;
+        m_ppfData[3][0] = 2; m_ppfData[3][1] = 1; m_ppfData[3][2] = 0; m_ppfData[3][3] = 3;
+        m_ppfData[4][0] = 0; m_ppfData[4][1] = 1; m_ppfData[4][2] = 2; m_ppfData[4][3] = 1;
 
         m_pCDtw->process (m_ppfData);
 
@@ -114,9 +114,9 @@ SUITE(Dtw)
         for (int i = 0; i < m_aiMatrixDimension[0]; i++)
             m_ppfData[i]    = new float [m_aiMatrixDimension[1]];
 
-        m_ppfData[0][0] = 0.1F; 
-        m_ppfData[1][0] = 1; 
-        m_ppfData[2][0] = 2; 
+        m_ppfData[0][0] = 0.1F;
+        m_ppfData[1][0] = 1;
+        m_ppfData[2][0] = 2;
 
         m_pCDtw->init(m_aiMatrixDimension[0], m_aiMatrixDimension[1]);
         m_pCDtw->process (m_ppfData);
@@ -150,7 +150,7 @@ SUITE(Dtw)
         for (int i = 0; i < m_aiMatrixDimension[0]; i++)
             m_ppfData[i]    = new float [m_aiMatrixDimension[1]];
 
-        m_ppfData[0][0] = 0.1F; m_ppfData[0][1] = 1; m_ppfData[0][2] = 2; 
+        m_ppfData[0][0] = 0.1F; m_ppfData[0][1] = 1; m_ppfData[0][2] = 2;
 
         m_pCDtw->init(m_aiMatrixDimension[0], m_aiMatrixDimension[1]);
         m_pCDtw->process (m_ppfData);
