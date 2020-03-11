@@ -116,7 +116,6 @@ Error_t CDtw::process(float **ppfDistanceMatrix)
     m_ppiPathResult[0][0] = i;
     m_ppiPathResult[1][0] = j;
     m_iPathLength = 1;
-//    std::cout << m_ppiPathResult[0][0] << m_ppiPathResult[1][0] << std::endl;
     
     while (i+j > 0)
     {
@@ -150,8 +149,6 @@ Error_t CDtw::process(float **ppfDistanceMatrix)
         m_iPathLength++;
         m_ppiPathResult[0][m_iPathLength-1] = i;
         m_ppiPathResult[1][m_iPathLength-1] = j;
-//        std::cout << m_ppiPathResult[0][m_iPathLength-1] << m_ppiPathResult[1][m_iPathLength-1] << std::endl;
-        
     }
     
     return kNoError;

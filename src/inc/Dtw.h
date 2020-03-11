@@ -80,7 +80,6 @@ private:
         kDtwParams
     };
     
-//    float **ppfDistanceMatrix;
     float **ppfCostMatrix;
     int   **m_ppiPathResult;
     
