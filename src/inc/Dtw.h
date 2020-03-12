@@ -80,10 +80,10 @@ private:
         kDtwParams
     };
     
-    float **ppfCostMatrix;
+    float **m_ppfCostMatrix;
     int   **m_ppiPathResult;
+    Directions_t **m_ppfDirectionsMatrix;
     
-    Directions_t **ppfDirectionsMatrix;
     bool  m_bIsInitialized;
     
     int   m_iNumRows;

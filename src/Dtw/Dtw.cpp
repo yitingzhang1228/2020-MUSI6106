@@ -3,7 +3,6 @@
 #include "Util.h"
 
 #include "Dtw.h"
-#include <iostream>
 
 CDtw::CDtw( void )
 {
@@ -26,12 +25,12 @@ Error_t CDtw::init( int iNumRows, int iNumCols )
     m_fpathCost   = 0.f;
     m_iPathLength = 0;
         
-    ppfCostMatrix = new float *[m_iNumRows];
+    m_ppfCostMatrix = new float *[m_iNumRows];
     for (int i = 0; i < m_iNumRows; i++)
     {
-        ppfCostMatrix[i] = new float [m_iNumCols];
+        m_ppfCostMatrix[i] = new float [m_iNumCols];
         for (int j = 0; j < m_iNumCols; j++)
-            ppfCostMatrix[i][j] = 0;
+            m_ppfCostMatrix[i][j] = 0;
     }
     
     m_ppiPathResult = new int *[2];
@@ -43,12 +42,12 @@ Error_t CDtw::init( int iNumRows, int iNumCols )
         }
     }
     
-    ppfDirectionsMatrix = new Directions_t *[m_iNumRows];
+    m_ppfDirectionsMatrix = new Directions_t *[m_iNumRows];
     for (int i = 0; i < m_iNumRows; i++)
     {
-        ppfDirectionsMatrix[i] = new Directions_t [m_iNumCols];
+        m_ppfDirectionsMatrix[i] = new Directions_t [m_iNumCols];
         for (int j = 0; j < m_iNumCols; j++)
-            ppfDirectionsMatrix[i][j] = Directions_t::kDiag;
+            m_ppfDirectionsMatrix[i][j] = Directions_t::kDiag;
     }
     
     m_bIsInitialized = true;
@@ -62,19 +61,19 @@ Error_t CDtw::reset()
     m_iPathLength = 0;
     
     for (int i= 0; i < m_iNumRows; i++)
-        delete ppfCostMatrix[i];
-    delete [] ppfCostMatrix;
-    ppfCostMatrix       = 0;
+        delete m_ppfCostMatrix[i];
+    delete [] m_ppfCostMatrix;
+    m_ppfCostMatrix = 0;
     
     for (int i= 0; i < 2; i++)
         delete m_ppiPathResult[i];
     delete [] m_ppiPathResult;
-    m_ppiPathResult       = 0;
+    m_ppiPathResult = 0;
 
     for (int i= 0; i < m_iNumRows; i++)
-        delete ppfDirectionsMatrix[i];
-    delete [] ppfDirectionsMatrix;
-    ppfDirectionsMatrix       = 0;
+        delete m_ppfDirectionsMatrix[i];
+    delete [] m_ppfDirectionsMatrix;
+    m_ppfDirectionsMatrix = 0;
     
     m_bIsInitialized = false;
     
@@ -86,18 +85,18 @@ Error_t CDtw::process(float **ppfDistanceMatrix)
     if(!m_bIsInitialized)
         return kNotInitializedError;
     
-    if(ppfDistanceMatrix == 0)
+    if(ppfDistanceMatrix == NULL)
         return kFunctionInvalidArgsError;
     
     // first column
     for (int i = 1; i < m_iNumRows; i++){
-        ppfCostMatrix[i][0] = ppfDistanceMatrix[i][0] +  ppfCostMatrix[i-1][0];
-        ppfDirectionsMatrix[i][0] = CDtw::kVert;
+        m_ppfCostMatrix[i][0] = ppfDistanceMatrix[i][0] + m_ppfCostMatrix[i-1][0];
+        m_ppfDirectionsMatrix[i][0] = CDtw::kVert;
     }
     // first row
     for (int j = 1; j < m_iNumCols; j++){
-        ppfCostMatrix[0][j] = ppfDistanceMatrix[0][j] + ppfCostMatrix[0][j-1];
-        ppfDirectionsMatrix[0][j] = CDtw::kHoriz;
+        m_ppfCostMatrix[0][j] = ppfDistanceMatrix[0][j] + m_ppfCostMatrix[0][j-1];
+        m_ppfDirectionsMatrix[0][j] = CDtw::kHoriz;
     }
 
     // rest of the matrix
@@ -105,7 +104,7 @@ Error_t CDtw::process(float **ppfDistanceMatrix)
     {
         for (int j = 1; j < m_iNumCols; j++)
         {
-            ppfCostMatrix[i][j] = ppfDistanceMatrix[i][j] + getMinCost(ppfCostMatrix[i][j-1],                                                             ppfCostMatrix[i-1][j], ppfCostMatrix[i-1][j-1],                                                           ppfDirectionsMatrix[i][j]);
+            m_ppfCostMatrix[i][j] = ppfDistanceMatrix[i][j] + getMinCost(m_ppfCostMatrix[i][j-1],                                                             m_ppfCostMatrix[i-1][j], m_ppfCostMatrix[i-1][j-1],                                                           m_ppfDirectionsMatrix[i][j]);
         }
     }
     
@@ -123,7 +122,6 @@ Error_t CDtw::process(float **ppfDistanceMatrix)
         {
             m_fpathCost += ppfDistanceMatrix[i][j-1];
             j = j - 1;
-            
         }
         else if (j == 0)
         {
@@ -132,16 +130,16 @@ Error_t CDtw::process(float **ppfDistanceMatrix)
         }
         else
         {
-            if(ppfDirectionsMatrix[i][j] == CDtw::kDiag){
+            if(m_ppfDirectionsMatrix[i][j] == CDtw::kDiag){
                 m_fpathCost += ppfDistanceMatrix[i-1][j-1];
                 i = i - 1;
                 j = j -1 ;
             }
-            else if(ppfDirectionsMatrix[i][j] == CDtw::kHoriz){
+            else if(m_ppfDirectionsMatrix[i][j] == CDtw::kHoriz){
                 m_fpathCost += ppfDistanceMatrix[i-1][j];
                 i = i - 1;
             }
-            else if(ppfDirectionsMatrix[i][j] == CDtw::kVert){
+            else if(m_ppfDirectionsMatrix[i][j] == CDtw::kVert){
                 m_fpathCost += ppfDistanceMatrix[i][j-1];
                 j = j - 1;
             }
