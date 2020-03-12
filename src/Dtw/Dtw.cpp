@@ -99,7 +99,7 @@ Error_t CDtw::process(float **ppfDistanceMatrix)
         m_ppfDirectionsMatrix[0][j] = CDtw::kHoriz;
     }
 
-    // rest of the matrix
+    // rest of the cost matrix
     for (int i = 1; i < m_iNumRows; i++)
     {
         for (int j = 1; j < m_iNumCols; j++)
@@ -182,8 +182,7 @@ float CDtw::getMinCost(float horiz, float vert, float diag, Directions_t& direct
         min = vert;
         direction = CDtw::kVert;
     }
-    
-    if (horiz < diag and horiz < vert){
+    if (horiz < diag && horiz < vert){
         min = horiz;
         direction = CDtw::kHoriz;
     }
